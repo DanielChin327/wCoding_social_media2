@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 
@@ -12,6 +13,7 @@ bcrypt = Bcrypt(app)
 
 app.config.from_object(Config)
 
+jwt = JWTManager(app)
 
 db = SQLAlchemy(app)
 

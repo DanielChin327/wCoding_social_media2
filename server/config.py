@@ -10,3 +10,4 @@ class Config:
     SQALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = "mariadb+pymysql://root:@localhost:3307/orm_database"
     CORS_HEADERS = "Content-Type"
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
