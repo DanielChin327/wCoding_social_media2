@@ -1,12 +1,10 @@
 from app import app, db, bcrypt
 from flask import jsonify, request
-
+from models import User
 
 @app.route("/hello", methods = ["GET"])
 def hello():
     return "Hello People"
-
-
 
 
 @app.route("/register", methods=["POST"])
@@ -21,13 +19,12 @@ def register_user():
 
     username = data.get("username")
     password = data.get("password")
-    email = data.get("email")
     bio = data.get("bio")
 
     hashed_password = bcrypt.generate_password_hash(password)
 
 
-    new_user = User(username=username, password=hashed_password, email=email, bio=bio)
+    new_user = User(username=username, password=hashed_password, bio=bio)
 
     db.session.add(new_user)
     db.session.commit()
