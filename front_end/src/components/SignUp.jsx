@@ -1,74 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 function SignUp() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [bio, setBio] = useState('');
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    bio: "",
+  });
 
-  const handleSubmit = async (e) => {
+  const [passwordMatch, setPasswordMatch] = useState(true);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    if (name === "confirmPassword") {
+      setPasswordMatch(value === formData.password);
+    } else if (name === "password") {
+      setPasswordMatch(value === formData.confirmPassword);
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (passwordMatch) {
+      console.log("Form submitted", formData);
+      registerUser(formData);
+    } else {
+      console.log("Passwords do not match");
+    }
+  };
 
+  const registerUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password, bio }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessage('User registered successfully!');
-        // You can redirect the user or clear the form here
-      } else if (response.status === 409) {
-        setMessage('Username already exists.');
-      } else {
-        setMessage('Failed to register user.');
-      }
+      const response = await axios.post("http://localhost:5000/register", data);
+      console.log(response.data);
     } catch (error) {
-      console.error('Error:', error);
-      setMessage('An error occurred while registering.');
+      console.error(error);
     }
   };
 
   return (
-    <div>
-      <h2>Sign Up</h2>
-      {message && <p>{message}</p>}
-
+    <>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Username:</label><br/>
+          <label htmlFor="username">Username:</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label>Password:</label><br/>
+          <label htmlFor="password">Password:</label>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label>Bio:</label><br/>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword || ""}
+            onChange={handleChange}
             required
-          ></textarea>
+          />
+          {!passwordMatch && (
+            <p style={{ color: "red" }}>Passwords do not match</p>
+          )}
         </div>
-        <br/>
         <button type="submit">Sign Up</button>
       </form>
-    </div>
+    </>
   );
 }
 
