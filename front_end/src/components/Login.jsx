@@ -9,7 +9,8 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      // First, verify the user's credentials
+      const loginResponse = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,13 +18,30 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await response.json();
+      const loginData = await loginResponse.json();
 
-      if (response.ok) {
-        setMessage('Login successful!');
-        // Handle successful login (e.g., redirect, store user data)
+      if (loginResponse.ok) {
+        // Credentials are valid; now request a token
+        const tokenResponse = await fetch('http://localhost:5000/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const tokenData = await tokenResponse.json();
+
+        if (tokenResponse.ok) {
+          // Store the token (e.g., in localStorage)
+          localStorage.setItem('token', tokenData.access_token);
+          setMessage('Login successful!');
+          // Redirect or update application state as needed
+        } else {
+          setMessage(tokenData.error || 'Failed to retrieve token.');
+        }
       } else {
-        setMessage(data.error || 'Login failed.');
+        setMessage(loginData.error || 'Login failed.');
       }
     } catch (error) {
       console.error('Error:', error);
