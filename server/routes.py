@@ -56,14 +56,21 @@ def login_user():
 @app.route("/token", methods=["POST"])
 def create_token():
     data = request.get_json()
+    print(data)
 
-    user = User.query.filter_by(username=data.get("username")).first()
+    username = request.json.get("username")
+
+    user = User.query.filter_by(username=username).first()
+
+    print(user)
 
     if user is None:
         return jsonify({"error": "Invalid username"}), 401
+
     if not bcrypt.check_password_hash(user.password, data.get("password")):
         return jsonify({"error": "Invalid password"}), 401
 
     access_token = create_access_token(identity=user.user_id)
+    print(access_token)
 
-    return jsonify({"access_token":  access_token}), 200
+    return jsonify({"access_token": access_token}), 200

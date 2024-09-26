@@ -1,79 +1,80 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import UseToken from "./UserToken";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [loginData, setLoginData] = useState({
+    username: "",
+    password: "",
+  });
 
-  const handleSubmit = async (e) => {
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginAttempt, setLoginAttempt] = useState(0);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setLoginSuccess(true);
+    }
+  }, [loginAttempt]);
+
+  const { token, removeToken, setToken } = UseToken();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      // First, verify the user's credentials
-      const loginResponse = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await axios.post(
+        "http://localhost:5000/token",
+        loginData
+      );
 
-      const loginData = await loginResponse.json();
-
-      if (loginResponse.ok) {
-        // Credentials are valid; now request a token
-        const tokenResponse = await fetch('http://localhost:5000/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-        });
-
-        const tokenData = await tokenResponse.json();
-
-        if (tokenResponse.ok) {
-          // Store the token (e.g., in localStorage)
-          localStorage.setItem('token', tokenData.access_token);
-          setMessage('Login successful!');
-          // Redirect or update application state as needed
-        } else {
-          setMessage(tokenData.error || 'Failed to retrieve token.');
-        }
+      if (response.status === 200) {
+        console.log("Login successful");
+        setToken(response.data.access_token);
+        setLoginSuccess(true);
       } else {
-        setMessage(loginData.error || 'Login failed.');
+        console.log("Login failed");
+
+        setLoginData({
+          username: "",
+          password: "",
+        });
       }
     } catch (error) {
-      console.error('Error:', error);
-      setMessage('An error occurred during login.');
+      console.error(error);
+    } finally {
+      setLoginAttempt(loginAttempt + 1);
+      console.log("Login attempt", loginAttempt);
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   return (
     <div>
-      <h2>Login</h2>
-      {message && <p>{message}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label><br/>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label><br/>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <br/>
+      <h1>Login</h1>
+      {loginSuccess && <p>LOGIN SUCCESSFUL</p>}
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={loginData.username}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={loginData.password}
+          onChange={handleChange}
+        />
         <button type="submit">Login</button>
       </form>
     </div>

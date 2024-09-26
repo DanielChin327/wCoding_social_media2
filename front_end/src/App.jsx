@@ -6,7 +6,7 @@ import Profile from './components/Profile'
 import Error from './components/Error'
 import NavBar from './components/NavBar'
 import {BrowserRouter, Route, Routes }from "react-router-dom"
-
+imp
 
 function App() {
   return (
@@ -22,21 +22,6 @@ function App() {
       </>
 
 
-
-
-
-
-    // <div>
-    //   <h1>Welcome to the App</h1>
-    //   <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-    //     <div>
-    //       <Login />
-    //     </div>
-    //     <div>
-    //       <SignUp />
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
 
