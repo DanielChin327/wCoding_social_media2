@@ -1,41 +1,47 @@
-/* Style for the navigation container */
+/* src/components/Navbar.css */
+
+/* Navigation container styling */
 nav {
-  background-color: #333;
-  padding: 10px;
+  background-color: #333;       /* Dark background */
+  padding: 10px 20px;           /* Increased horizontal padding for better spacing */
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
-/* Remove the default list styling */
+/* Remove the default list styling and set up Flexbox */
 ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start; /* Align items to the start */
+  align-items: center;
+  width: 100%;
 }
 
 /* Style for each list item */
 li {
-  display: inline;
+  margin-right: 20px; /* Space between items */
 }
 
 /* Style for the links */
 .navbar-link {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   padding: 8px 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
 }
 
 /* Hover effect on the links */
 .navbar-link:hover {
   background-color: #575757;
-  border-radius: 4px;
 }
 
-/* Optional: active link styling */
+/* Active link styling */
 .navbar-link.active {
   background-color: #4CAF50;
   color: white;
-  border-radius: 4px;
 }
