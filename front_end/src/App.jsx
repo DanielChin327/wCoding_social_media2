@@ -1,4 +1,4 @@
-import { useState } from "react"; // Import React hook to manage component state
+
 // import reactLogo from './assets/react.svg' // Example import (commented out)
 // import viteLogo from '/vite.svg' // Example import (commented out)
 import "./App.css"; // Import the main stylesheet for the app
@@ -23,7 +23,6 @@ function App() {
   // - NavBar is included globally for all routes.
   // - Routes define different paths (e.g., "/", "/login", "/signup") and map them to their corresponding components.
   // - The Login component receives the setToken function as a prop to handle authentication.
-
   return (
     <>
       <BrowserRouter>
@@ -42,5 +41,4 @@ function App() {
     </>
   );
 }
-
 export default App; // Export the App component as the default export
